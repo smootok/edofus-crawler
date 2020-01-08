@@ -9,7 +9,7 @@ module.exports = async url => {
     }
   }
   try {
-    const response = await rp(options)
+    const response = rp(options)
     return Promise.resolve(response)
   } catch (error) {
     return Promise.reject(error)
