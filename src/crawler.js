@@ -1,3 +1,5 @@
+const fs = require('fs')
+
 const request = require('./request')
 const selectors = require('./selectors')
 const parser = require('./parser')
@@ -88,9 +90,21 @@ const getItems = async (type, urls) => {
   }
 }
 
+const persist = (filename, data) => {
+  fs.writeFile(
+    `${__dirname}/../output/${filename + '.json'}`,
+    JSON.stringify(data),
+    'utf8',
+    err => {
+      err ? console.log(err) : console.log('The file was saved successfully!')
+    }
+  )
+}
+
 module.exports = {
   getItem,
   getPaginationPages,
   getItemsUrls,
-  getItems
+  getItems,
+  persist
 }

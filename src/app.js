@@ -1,3 +1,5 @@
+const slug = require('slug')
+
 const crawler = require('./crawler')
 
 module.exports = async argv => {
@@ -7,16 +9,18 @@ module.exports = async argv => {
   switch (command) {
     case 'get-item': {
       const item = await crawler.getItem(type, url)
-      console.log(item)
+      const fileName = slug(item.name, { lower: true })
+      crawler.persist(fileName, item)
       break
     }
 
     case 'get-all': {
-      const type = 'equipment'
       const paginationPages = await crawler.getPaginationPages(type)
       const itemsUrls = crawler.getItemsUrls(paginationPages)
       const items = await crawler.getItems(type, itemsUrls)
-      console.log(items)
+      const fileName = slug(type, { lower: true })
+      crawler.persist(fileName, items)
+      break
     }
   }
 }
