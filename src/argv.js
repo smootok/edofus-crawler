@@ -1,7 +1,7 @@
 const yargs = require('yargs')
 
 module.exports = yargs
-  .command('<get-item> <type>', 'Get item by url and type', yargs => {
+  .command('<get> <type>', 'Get item by url and type', yargs => {
     yargs.positional('type', {
       describe: 'Type of item'
     })

@@ -1,10 +1,11 @@
 const fs = require('fs')
+const path = require('path')
+const slug = require('slug')
 
 const request = require('./request')
 const selectors = require('./selectors')
 const parser = require('./parser')
 const types = require('./types')
-const { getRandomNum } = require('./helpers')
 
 const getPage = async url => request(url)
 
@@ -17,19 +18,28 @@ const getItem = async (type, url) => {
   return item
 }
 
-const calcSleepTime = (
-  index,
-  requestSleepTime = 2,
-  intervalSleepTime = 60,
-  intervalToSleep = 50
-) => {
-  if ((index + 1) % intervalToSleep !== 0) {
-    return requestSleepTime
+const calcSleepTime = ({
+  reqNumber = 0,
+  hasError = false,
+  errorCount = 0,
+  errorSleepSeconds = 60,
+  shortSleepSeconds = 2,
+  shortSleepInterval = 5,
+  longSleepSeconds = 60,
+  longSleepInterval = 40
+}) => {
+  if (hasError === true) {
+    return errorSleepSeconds * errorCount
+  } else if (reqNumber % longSleepInterval === 0) {
+    return longSleepSeconds
+  } else if (reqNumber % shortSleepInterval === 0) {
+    return shortSleepSeconds
   }
-  return getRandomNum(intervalSleepTime / 3, intervalSleepTime)
+  return 0
 }
 
 const sleep = seconds => {
+  seconds > 2 && console.log(`Sleep ${seconds}...`)
   return new Promise(resolve => setTimeout(() => resolve(), seconds * 1000))
 }
 
@@ -51,10 +61,7 @@ const getPaginationPages = async (type, startPageNum = 1, endPageNum) => {
     const page = await getPage(getPaginationUrl(type, i))
     pages.push(page)
     console.log(`Page ${i}/${endPageNum} has been added for crawling`)
-
-    const sleepSeconds = calcSleepTime(i)
-    sleepSeconds > 2 && console.log(`Sleep ${Math.floor(sleepSeconds)}...`)
-    await sleep(sleepSeconds)
+    await sleep(calcSleepTime({ reqNumber: i }))
   }
   return pages
 }
@@ -71,34 +78,37 @@ const getItemsUrls = pages => {
 
 const getItems = async (type, urls) => {
   const items = []
-  for (const [index, url] of urls.entries()) {
+  const totalItems = urls.length
+  let itemIndex = 0
+  let errorCount = 0
+
+  while (urls.length) {
     try {
-      const item = await getItem(type, url)
+      const item = await getItem(type, urls[0])
       items.push(item)
-      console.log(
-        `Item : ${item.name} has been parsed (${index + 1}/${urls.length})`
-      )
+      urls.shift()
+      itemIndex++
+      console.log(`Item crawled: ${item.name} (${itemIndex}/${totalItems})`)
+      await sleep(calcSleepTime({ reqNumber: itemIndex }))
     } catch (e) {
       if (e.statusCode !== 404) {
-        throw new Error(e)
+        errorCount++
+        console.log(`Error Number: ${errorCount}, ${e.message}`)
+        await sleep(calcSleepTime({ hasError: true, errorCount }))
       }
     }
-
-    const sleepSeconds = calcSleepTime(index)
-    sleepSeconds > 2 && console.log(`Sleep ${Math.floor(sleepSeconds)}...`)
-    await sleep(sleepSeconds)
   }
+  return items
 }
 
 const persist = (filename, data) => {
-  fs.writeFile(
-    `${__dirname}/../output/${filename + '.json'}`,
-    JSON.stringify(data),
-    'utf8',
-    err => {
-      err ? console.log(err) : console.log('The file was saved successfully!')
-    }
-  )
+  const formatedFilename = slug(filename, { lower: true }) + '.json'
+  const filePath = path.join(__dirname, '..', 'output', formatedFilename)
+  fs.writeFile(filePath, JSON.stringify(data), 'utf8', err => {
+    err
+      ? console.log(err)
+      : console.log('The file was saved successfully!', filePath)
+  })
 }
 
 module.exports = {

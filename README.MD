@@ -7,7 +7,7 @@ Crawler that help developers to build their Dofus app without worrying about how
 Get one item by Type and URL
 
 ```bash
-node index.js get-item <TYPE> -u <URL>
+node index.js get <TYPE> -u <URL>
 ```
 
 Get all items by Type
@@ -21,7 +21,7 @@ node index.js get-all <TYPE>
 Get one item by Type and URL
 
 ```bash
-node index.js get-item equipment -u https://www.dofus.com/en/mmorpg/encyclopedia/equipment/14076-count-harebourg
+node index.js get equipment -u https://www.dofus.com/en/mmorpg/encyclopedia/equipment/14076-count-harebourg
 ```
 
 Get all items by Type

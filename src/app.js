@@ -1,5 +1,3 @@
-const slug = require('slug')
-
 const crawler = require('./crawler')
 
 module.exports = async argv => {
@@ -7,10 +5,9 @@ module.exports = async argv => {
   const { type, url } = argv
 
   switch (command) {
-    case 'get-item': {
+    case 'get': {
       const item = await crawler.getItem(type, url)
-      const fileName = slug(item.name, { lower: true })
-      crawler.persist(fileName, item)
+      crawler.persist(item.name, [item])
       break
     }
 
@@ -18,8 +15,7 @@ module.exports = async argv => {
       const paginationPages = await crawler.getPaginationPages(type)
       const itemsUrls = crawler.getItemsUrls(paginationPages)
       const items = await crawler.getItems(type, itemsUrls)
-      const fileName = slug(type, { lower: true })
-      crawler.persist(fileName, items)
+      crawler.persist(type, items)
       break
     }
   }
