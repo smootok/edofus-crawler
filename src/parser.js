@@ -40,11 +40,41 @@ const getEffects = $ => {
   return _getPanelContent($, 'Effects')
     .find(selectors.firstCategory.itemPanelContentElement)
     .map((i, el) =>
-      $(el)
-        .text()
-        .trim()
+      _parseTextEffect(
+        $(el)
+          .text()
+          .trim()
+      )
     )
     .get()
+}
+
+const _parseTextEffect = text => {
+  let effect = {}
+  const splitedText = text.split(' ')
+  if (splitedText[1] === 'to') {
+    effect = {
+      text,
+      start: parseInt(splitedText[0]),
+      end: parseInt(splitedText[2]),
+      name: splitedText
+        .slice(3)
+        .join('-')
+        .toLowerCase()
+    }
+  } else if (!isNaN(splitedText[0])) {
+    effect = {
+      text,
+      start: parseInt(splitedText[0]),
+      name: splitedText
+        .slice(1)
+        .join('-')
+        .toLowerCase()
+    }
+  } else {
+    effect = { text }
+  }
+  return effect
 }
 
 const getCharacteristics = $ => {
