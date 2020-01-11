@@ -24,9 +24,9 @@ const calcSleepTime = ({
   errorCount = 0,
   errorSleepSeconds = 60,
   shortSleepSeconds = 2,
-  shortSleepInterval = 5,
-  longSleepSeconds = 60,
-  longSleepInterval = 40
+  shortSleepInterval = 10,
+  longSleepSeconds = 20,
+  longSleepInterval = 100
 }) => {
   if (hasError === true) {
     return errorSleepSeconds * errorCount
@@ -39,7 +39,7 @@ const calcSleepTime = ({
 }
 
 const sleep = seconds => {
-  seconds > 2 && console.log(`Sleep ${seconds}...`)
+  seconds > 2 && console.log(`Sleep ${seconds} seconds...`)
   return new Promise(resolve => setTimeout(() => resolve(), seconds * 1000))
 }
 
@@ -95,6 +95,9 @@ const getItems = async (type, urls) => {
         errorCount++
         console.log(`Error Number: ${errorCount}, ${e.message}`)
         await sleep(calcSleepTime({ hasError: true, errorCount }))
+      } else {
+        console.log('Error 404 Item Not Found:', urls[0])
+        urls.shift()
       }
     }
   }

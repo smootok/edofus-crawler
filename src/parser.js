@@ -20,7 +20,7 @@ const getLevel = $ => {
 }
 
 const getImageUrl = $ => {
-  return $(selectors.firstCategory.itemImageUrl).attr('src')
+  return _absoluteUrl($(selectors.firstCategory.itemImageUrl).attr('src'))
 }
 
 const getType = $ => {
@@ -47,34 +47,6 @@ const getEffects = $ => {
       )
     )
     .get()
-}
-
-const _parseTextEffect = text => {
-  let effect = {}
-  const splitedText = text.split(' ')
-  if (splitedText[1] === 'to') {
-    effect = {
-      text,
-      start: parseInt(splitedText[0]),
-      end: parseInt(splitedText[2]),
-      name: splitedText
-        .slice(3)
-        .join('-')
-        .toLowerCase()
-    }
-  } else if (!isNaN(splitedText[0])) {
-    effect = {
-      text,
-      start: parseInt(splitedText[0]),
-      name: splitedText
-        .slice(1)
-        .join('-')
-        .toLowerCase()
-    }
-  } else {
-    effect = { text }
-  }
-  return effect
 }
 
 const getCharacteristics = $ => {
@@ -123,6 +95,46 @@ const _getPanelContent = ($, name) => {
     )
     .parent()
     .find(selectors.firstCategory.itemPanelContent)
+}
+
+const _parseTextEffect = text => {
+  let effect = {}
+  const splitedText = text.split(' ')
+  if (splitedText[1] === 'to') {
+    effect = {
+      text,
+      start: parseInt(splitedText[0]),
+      end: parseInt(splitedText[2]),
+      name: splitedText
+        .slice(3)
+        .join('-')
+        .toLowerCase()
+    }
+  } else if (!isNaN(splitedText[0])) {
+    effect = {
+      text,
+      start: parseInt(splitedText[0]),
+      name: splitedText
+        .slice(1)
+        .join('-')
+        .toLowerCase()
+    }
+  } else {
+    effect = { text }
+  }
+  return effect
+}
+
+function _absoluteUrl (url) {
+  // 'https://s.ankama.com/www/static.ankama.com/dofus/ng/img/../../../dofus/www/game/items/200/3083.png' =>
+  // 'https://s.ankama.com/www/static.ankama.com/dofus/www/game/items/200/3083.png'
+  const count = (url.match(/\/\.\./g) || []).length
+
+  for (let i = 0; i < count; i++) {
+    url = url.replace(/\/[^/]+\/\.\./, '')
+  }
+
+  return url
 }
 
 module.exports = {
