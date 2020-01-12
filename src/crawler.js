@@ -104,6 +104,26 @@ const getItems = async (type, urls) => {
   return items
 }
 
+const getEffectsNames = filename => {
+  try {
+    const items = _getFileFromOutput(filename)
+    const effectsNames = new Set()
+    for (const item of items) {
+      for (const effect of item.effects) {
+        effectsNames.add(effect.name)
+      }
+    }
+    return [...effectsNames]
+  } catch (e) {
+    console.log(`File not found: /output/${filename}.json`)
+  }
+}
+
+const _getFileFromOutput = filename => {
+  const filePath = path.join(__dirname, '..', 'output', filename + '.json')
+  return JSON.parse(fs.readFileSync(filePath, 'utf8'))
+}
+
 const persist = (filename, data) => {
   const formatedFilename = slug(filename, { lower: true }) + '.json'
   const filePath = path.join(__dirname, '..', 'output', formatedFilename)
@@ -119,5 +139,6 @@ module.exports = {
   getPaginationPages,
   getItemsUrls,
   getItems,
+  getEffectsNames,
   persist
 }

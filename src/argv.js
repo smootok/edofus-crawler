@@ -13,6 +13,17 @@ module.exports = yargs
       })
       .demandOption(['u'])
   })
-  .command('<get-all> <type>', 'Get all items by type')
+  .command('<get-all> <type>', 'Get all items by type', yargs => {
+    yargs.positional('type', {
+      describe: 'Type of item'
+    })
+  })
+  .command(
+    '<get-effects> <filename>',
+    'Get all effects names from a JSON file', yargs => {
+      yargs.positional('filename', {
+        describe: 'JSON filename located in output folder'
+      })
+    })
   .demandCommand()
   .help().argv
