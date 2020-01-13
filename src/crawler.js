@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const slug = require('slug')
 
-const request = require('./request')
+const { request, download } = require('./request')
 const selectors = require('./selectors')
 const parser = require('./parser')
 const types = require('./types')
@@ -104,24 +104,58 @@ const getItems = async (type, urls) => {
   return items
 }
 
-const getEffectsNames = filename => {
+const getFileFromOutput = filename => {
+  const filePath = path.join(__dirname, '..', 'output', filename + '.json')
   try {
-    const items = _getFileFromOutput(filename)
-    const effectsNames = new Set()
-    for (const item of items) {
-      for (const effect of item.effects) {
-        effectsNames.add(effect.name)
-      }
-    }
-    return [...effectsNames]
+    return JSON.parse(fs.readFileSync(filePath, 'utf8'))
   } catch (e) {
     console.log(`File not found: /output/${filename}.json`)
   }
 }
 
-const _getFileFromOutput = filename => {
-  const filePath = path.join(__dirname, '..', 'output', filename + '.json')
-  return JSON.parse(fs.readFileSync(filePath, 'utf8'))
+const getEffectsNames = filename => {
+  const items = getFileFromOutput(filename)
+  if (!items) return
+  const effectsNames = new Set()
+  for (const item of items) {
+    for (const effect of item.effects) {
+      effectsNames.add(effect.name)
+    }
+  }
+  return [...effectsNames]
+}
+
+const downloadImages = async filename => {
+  const items = getFileFromOutput(filename)
+  if (!items) return
+
+  const totalImages = items.length
+  let imageIndex = 0
+  let errorCount = 0
+
+  while (items.length) {
+    const item = items[0]
+    const filename = `${item.id}.png`
+    try {
+      await download({
+        url: item.imageUrl,
+        location: 'images',
+        filename
+      })
+      imageIndex++
+      items.shift()
+      console.log(
+        `Image ${filename} (${imageIndex}/${totalImages}):  was saved successfully`
+      )
+    } catch (e) {
+      console.log(
+        `Error when downloading the image ${imageIndex}/${totalImages}: ${filename}`,
+        e
+      )
+      errorCount++
+      sleep(calcSleepTime({ hasError: true, errorCount }))
+    }
+  }
 }
 
 const persist = (filename, data) => {
@@ -140,5 +174,6 @@ module.exports = {
   getItemsUrls,
   getItems,
   getEffectsNames,
+  downloadImages,
   persist
 }

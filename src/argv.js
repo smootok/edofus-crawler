@@ -20,10 +20,21 @@ module.exports = yargs
   })
   .command(
     '<get-effects> <filename>',
-    'Get all effects names from a JSON file', yargs => {
+    'Get all effects names from a JSON items file',
+    yargs => {
       yargs.positional('filename', {
         describe: 'JSON filename located in output folder'
       })
-    })
+    }
+  )
+  .command(
+    '<download-images> <filename>',
+    'Download all images from a JSON items file',
+    yargs => {
+      yargs.positional('filename', {
+        describe: 'JSON filename located in output folder'
+      })
+    }
+  )
   .demandCommand()
   .help().argv

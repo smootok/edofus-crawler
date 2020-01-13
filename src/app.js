@@ -26,5 +26,11 @@ module.exports = async argv => {
       effects && crawler.persist(`${filename}-effects`, effects)
       break
     }
+
+    case 'download-images': {
+      const { filename } = argv
+      await crawler.downloadImages(filename)
+      break
+    }
   }
 }
