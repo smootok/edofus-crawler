@@ -16,6 +16,18 @@ Get all items by Type
 node index.js get-all <TYPE>
 ```
 
+Get all effects from an output file
+
+```bash
+node index.js get-effects <FILENAME>
+```
+
+Download all images from an output file
+
+```bash
+node index.js download-images <FILENAME>
+```
+
 ### Examples
 
 Get one item by Type and URL
@@ -28,6 +40,18 @@ Get all items by Type
 
 ```bash
 node index.js get-all equipment
+```
+
+Get all effects from an output file
+
+```bash
+node index.js get-effects equipment.json
+```
+
+Download all images from an output file
+
+```bash
+node index.js download-images equipment.json
 ```
 
 ## License

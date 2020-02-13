@@ -23,7 +23,8 @@ module.exports = async argv => {
     case 'get-effects': {
       const { filename } = argv
       const effects = crawler.getEffectsNames(filename)
-      effects && crawler.persist(`${filename}-effects`, effects)
+      const outputFileName = filename.split('.json')[0] + '-effects'
+      effects && crawler.persist(outputFileName, effects)
       break
     }
 

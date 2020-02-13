@@ -105,11 +105,11 @@ const getItems = async (type, urls) => {
 }
 
 const getFileFromOutput = filename => {
-  const filePath = path.join(__dirname, '..', 'output', filename + '.json')
+  const filePath = path.join(__dirname, '..', 'output', filename)
   try {
     return JSON.parse(fs.readFileSync(filePath, 'utf8'))
   } catch (e) {
-    console.log(`File not found: /output/${filename}.json`)
+    console.log(`File not found: /output/${filename}`)
   }
 }
 
