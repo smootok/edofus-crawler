@@ -110,7 +110,7 @@ const _parseTextEffect = text => {
         .join('-')
         .toLowerCase()
     }
-  } else if (!isNaN(splitedText[0])) {
+  } else if (!isNaN(parseInt(splitedText[0]))) {
     effect = {
       text,
       start: parseInt(splitedText[0]),
