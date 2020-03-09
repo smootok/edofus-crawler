@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const uri = 'mongodb://localhost:27017/edofus'
 
 const itemSchema = new mongoose.Schema({}, { strict: false })
-const Item = mongoose.model('Item', itemSchema)
+const Item = mongoose.model('Equipment', itemSchema)
 
 mongoose
   .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })

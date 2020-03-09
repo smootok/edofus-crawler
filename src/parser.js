@@ -139,7 +139,7 @@ function _absoluteUrl (url) {
 
 module.exports = {
   url: getUrl,
-  id: getId,
+  itemId: getId,
   name: getName,
   level: getLevel,
   imageUrl: getImageUrl,
