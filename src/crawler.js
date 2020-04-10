@@ -50,7 +50,7 @@ const getPaginationUrl = (type, pageNum) => {
 const getPaginationPages = async (type, startPageNum = 1, endPageNum) => {
   const startPaginationUrl = getPaginationUrl(type, startPageNum)
   const startPage = await getPage(startPaginationUrl)
-  endPageNum = endPageNum || startPage(selectors.shared.lastPageNum).text()
+  endPageNum = endPageNum || parseInt(startPage(selectors.shared.lastPageNum).text())
 
   if (isNaN(endPageNum)) {
     return [startPage]
@@ -135,7 +135,7 @@ const downloadImages = async filename => {
 
   while (items.length) {
     const item = items[0]
-    const filename = `${item.id}.png`
+    const filename = `${item.itemId}.png`
     try {
       await download({
         url: item.imageUrl,

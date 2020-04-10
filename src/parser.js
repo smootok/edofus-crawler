@@ -16,7 +16,8 @@ const getName = $ => {
 
 const getLevel = $ => {
   const level = $(selectors.firstCategory.itemLevel).text()
-  return parseInt(level.split(':')[1].trim())
+  if (!level) return ''
+  return parseInt(level.split(':')[1])
 }
 
 const getImageUrl = $ => {
@@ -39,6 +40,18 @@ const getDescription = $ => {
 const getEffects = $ => {
   return _getPanelContent($, 'Effects')
     .find(selectors.firstCategory.itemPanelContentElement)
+    .map((i, el) =>
+      _parseTextEffect(
+        $(el)
+          .text()
+          .trim()
+      )
+    )
+    .get()
+}
+
+const getEvolutionEffects = $ => {
+  return $(selectors.firstCategory.itemEvolutionEffects)
     .map((i, el) =>
       _parseTextEffect(
         $(el)
@@ -146,6 +159,7 @@ module.exports = {
   type: getType,
   description: getDescription,
   effects: getEffects,
+  evolutionEffects: getEvolutionEffects,
   characteristics: getCharacteristics,
   conditions: getConditions,
   set: getSet

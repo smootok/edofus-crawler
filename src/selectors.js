@@ -12,6 +12,7 @@ module.exports = {
     itemPanelTitle: 'div.ak-panel-title',
     itemPanelContent: '.ak-panel-content',
     itemPanelContentElement: '.ak-content-list .ak-list-element',
-    itemLevel: '.ak-encyclo-detail-level'
+    itemLevel: '.ak-encyclo-detail-level',
+    itemEvolutionEffects: '.ak-form + .ak-displaymode-col .ak-main-content'
   }
 }
