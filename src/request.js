@@ -1,21 +1,17 @@
 const rp = require('request-promise-native')
+const puppeteer = require('puppeteer')
 const cheerio = require('cheerio')
 const fs = require('fs')
 const path = require('path')
 
-const request = url => {
-  const options = {
-    uri: url,
-    transform (body) {
-      return cheerio.load(body)
-    }
-  }
-  try {
-    const response = rp(options)
-    return Promise.resolve(response)
-  } catch (error) {
-    return Promise.reject(error)
-  }
+const request = async url => {
+  const browser = await puppeteer.launch({ headless: false, timeout: 100000 })
+  const page = await browser.newPage()
+  await page.goto(url, { waitUntil: 'networkidle2' })
+  const html = await page.content()
+  await page.close()
+  await browser.close()
+  return cheerio.load(html)
 }
 
 const download = ({ url, location, filename }) => {

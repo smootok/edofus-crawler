@@ -138,7 +138,7 @@ const _parseTextEffect = text => {
   return effect
 }
 
-function _absoluteUrl (url) {
+function _absoluteUrl (url = '') {
   // 'https://s.ankama.com/www/static.ankama.com/dofus/ng/img/../../../dofus/www/game/items/200/3083.png' =>
   // 'https://s.ankama.com/www/static.ankama.com/dofus/www/game/items/200/3083.png'
   const count = (url.match(/\/\.\./g) || []).length

@@ -50,7 +50,8 @@ const getPaginationUrl = (type, pageNum) => {
 const getPaginationPages = async (type, startPageNum = 1, endPageNum) => {
   const startPaginationUrl = getPaginationUrl(type, startPageNum)
   const startPage = await getPage(startPaginationUrl)
-  endPageNum = endPageNum || parseInt(startPage(selectors.shared.lastPageNum).text())
+  endPageNum =
+    endPageNum || parseInt(startPage(selectors.shared.lastPageNum).text())
 
   if (isNaN(endPageNum)) {
     return [startPage]
@@ -90,6 +91,7 @@ const getItems = async (type, urls) => {
       itemIndex++
       console.log(`Item crawled: ${item.name} (${itemIndex}/${totalItems})`)
       await sleep(calcSleepTime({ reqNumber: itemIndex }))
+      errorCount = 0
     } catch (e) {
       if (e.statusCode !== 404) {
         errorCount++
@@ -107,9 +109,11 @@ const getItems = async (type, urls) => {
 const getFileFromOutput = filename => {
   const filePath = path.join(__dirname, '..', 'output', filename)
   try {
-    return JSON.parse(fs.readFileSync(filePath, 'utf8'))
+    const fileContent = fs.readFileSync(filePath, 'utf8')
+
+    return JSON.parse(fileContent)
   } catch (e) {
-    console.log(`File not found: /output/${filename}`)
+    console.log(e)
   }
 }
 
